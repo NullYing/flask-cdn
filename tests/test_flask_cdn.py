@@ -117,7 +117,7 @@ class UrlTests(unittest.TestCase):
         VERSION = '1.1-2'
         self.app.config['CDN_VERSION'] = VERSION
         path = os.path.join(self.app.static_folder, 'bah.js')
-        exp = 'http://mycdnname.cloudfront.net/static/bah.js?v={0}'.format(VERSION)
+        exp = '//mycdnname.cloudfront.net/static/bah.js?v={0}'.format(VERSION)
         self.assertEquals(self.client_get(ufs).get_data(True), exp)
 
         self.app.config['CDN_VERSION'] = None
@@ -172,7 +172,7 @@ class BlueprintTest(unittest.TestCase):
         response = client.get('/without_static/%s' % ufs)
         path = os.path.join(self.app.static_folder, 'bah.js')
         ts = int(os.path.getmtime(path))
-        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
+        exp = '//mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
         self.assertEquals(response.get_data(True), exp)
 
 

@@ -1,63 +1,108 @@
 import os
-
+try:
+    from werkzeug.urls import url_quote
+except ImportError:
+    from urlparse import quote as url_quote
+from werkzeug.routing import BuildError
 from flask import url_for as flask_url_for
-from flask import current_app, request
+from flask import current_app, _request_ctx_stack, request, _app_ctx_stack
 
 
-def url_for(endpoint, **values):
-    """
-    Generates a URL to the given endpoint.
+def url_for(endpoint, donot_use_cdn=False, **values):
 
-    If the endpoint is for a static resource then a URL to the CDN is
-    generated, otherwise the call is passed on to `flask.url_for`.
-
-    Because this function is set as a jinja environment variable when
-    `CDN.init_app` is invoked, this function replaces `flask.url_for` in
-    templates automatically. It is unlikely that this function will need to be
-    directly called from within your application code, unless you need to refer
-    to static assets outside of your templates.
-    """
-    app = current_app
-
-    if app.config['CDN_DEBUG']:
+    appctx = _app_ctx_stack.top
+    reqctx = _request_ctx_stack.top
+    if appctx is None:
+        raise RuntimeError('Attempted to generate a URL without the '
+                           'application context being pushed. This has to be '
+                           'executed when application context is available.')
+    # ADD FOR CDN
+    app = appctx.app
+    if app.config['CDN_DEBUG'] or donot_use_cdn:
         return flask_url_for(endpoint, **values)
+    # ADD END
 
-    def endpoint_match(endpoint):
-        if endpoint in app.config['CDN_ENDPOINTS']:
-            return True
+    # If request specific information is available we have some extra
+    # features that support "relative" URLs.
+    if reqctx is not None:
+        url_adapter = reqctx.url_adapter
+        blueprint_name = request.blueprint
+        if not reqctx.request._is_old_module:
+            if endpoint[:1] == '.':
+                if blueprint_name is not None:
+                    endpoint = blueprint_name + endpoint
+                else:
+                    endpoint = endpoint[1:]
+        else:
+            # TODO: get rid of this deprecated functionality in 1.0
+            if '.' not in endpoint:
+                if blueprint_name is not None:
+                    endpoint = blueprint_name + '.' + endpoint
+            elif endpoint.startswith('.'):
+                endpoint = endpoint[1:]
+        external = values.pop('_external', False)
 
-        for x in app.config['CDN_ENDPOINTS']:
-            if endpoint.endswith('.%s' % x):
-                return True
+    # Otherwise go with the url adapter from the appctx and make
+    # the URLs external by default.
+    else:
+        url_adapter = appctx.url_adapter
+        if url_adapter is None:
+            raise RuntimeError('Application was not able to create a URL '
+                               'adapter for request independent URL generation. '
+                               'You might be able to fix this by setting '
+                               'the SERVER_NAME config variable.')
+        external = values.pop('_external', True)
 
-        return False
+    # ADD FOR CDN
+    external = True
+    # ADD END
 
-    if endpoint_match(endpoint):
+    anchor = values.pop('_anchor', None)
+    method = values.pop('_method', None)
+    scheme = values.pop('_scheme', None)
+    appctx.app.inject_url_defaults(endpoint, values)
+
+    # This is not the best way to deal with this but currently the
+    # underlying Werkzeug router does not support overriding the scheme on
+    # a per build call basis.
+    old_scheme = None
+    if scheme is not None:
+        if not external:
+            raise ValueError('When specifying _scheme, _external must be True')
+        old_scheme = url_adapter.url_scheme
+        url_adapter.url_scheme = scheme
+
+    # ADD FOR CDN
+    if app.config['CDN_HTTPS']:
+        url_adapter.url_scheme = "https"
+    if app.config['CDN_TIMESTAMP']:
+        path = os.path.join(endpoint, values['filename'])
+        values['t'] = int(os.path.getmtime(path))
+
+    values['v'] = app.config['CDN_VERSION']
+
+    url_adapter = app.url_map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
+    # ADD END
+
+    try:
         try:
-            scheme = values.pop('_scheme')
-        except KeyError:
-            scheme = 'http'
-            cdn_https = app.config['CDN_HTTPS']
-            if cdn_https is True or (cdn_https is None and request.is_secure):
-                scheme = 'https'
+            rv = url_adapter.build(endpoint, values, method=method,
+                                   force_external=external)
+        finally:
+            if old_scheme is not None:
+                url_adapter.url_scheme = old_scheme
+    except BuildError as error:
+        # We need to inject the values again so that the app callback can
+        # deal with that sort of stuff.
+        values['_external'] = external
+        values['_anchor'] = anchor
+        values['_method'] = method
 
-        static_folder = app.static_folder
-        if (request.blueprint is not None and
-                request.blueprint in app.blueprints and
-                app.blueprints[request.blueprint].has_static_folder):
-            static_folder = app.blueprints[request.blueprint].static_folder
+        return appctx.app.handle_url_build_error(error, endpoint, values)
 
-        urls = app.url_map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
-
-        if app.config['CDN_TIMESTAMP']:
-            path = os.path.join(static_folder, values['filename'])
-            values['t'] = int(os.path.getmtime(path))
-
-        values['v'] = app.config['CDN_VERSION']
-
-        return urls.build(endpoint, values=values, force_external=True)
-
-    return flask_url_for(endpoint, **values)
+    if anchor is not None:
+        rv += '#' + url_quote(anchor)
+    return rv
 
 
 class CDN(object):
@@ -88,8 +133,7 @@ class CDN(object):
                     ('CDN_DOMAIN', None),
                     ('CDN_HTTPS', None),
                     ('CDN_TIMESTAMP', True),
-                    ('CDN_VERSION', None),
-                    ('CDN_ENDPOINTS', ['static'])]
+                    ('CDN_VERSION', None)]
 
         for k, v in defaults:
             app.config.setdefault(k, v)
