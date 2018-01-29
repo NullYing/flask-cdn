@@ -133,7 +133,7 @@ class UrlTests(unittest.TestCase):
 
         ufs = "{{ url_for('static', filename='bah.js', _scheme='http') }}"
         self.app.config['CDN_HTTPS'] = True
-        exp = 'https://mycdnname.cloudfront.net/static/bah.js'
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js'
         self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
                          exp)
 

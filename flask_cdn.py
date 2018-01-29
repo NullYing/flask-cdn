@@ -75,7 +75,7 @@ def url_for(endpoint, **values):
         url_adapter.url_scheme = scheme
 
     # ADD FOR CDN
-    if app.config['CDN_HTTPS']:
+    if not scheme and app.config['CDN_HTTPS']:
         url_adapter.url_scheme = "https"
     if app.config['CDN_TIMESTAMP']:
         path = None
