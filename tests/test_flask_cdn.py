@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-
 import os
 import unittest
 
@@ -17,19 +16,19 @@ class DefaultsTest(unittest.TestCase):
 
     def test_debug_default(self):
         """ Tests CDN_DEBUG default value is correctly set. """
-        self.assertEquals(self.app.config['CDN_DEBUG'], False)
+        self.assertEqual(self.app.config['CDN_DEBUG'], False)
 
     def test_domain_default(self):
         """ Tests CDN_DOMAIN default value is correctly set. """
-        self.assertEquals(self.app.config['CDN_DOMAIN'], None)
+        self.assertEqual(self.app.config['CDN_DOMAIN'], None)
 
     def test_https_default(self):
         """ Tests CDN_HTTPS default value is correctly set. """
-        self.assertEquals(self.app.config['CDN_HTTPS'], None)
+        self.assertEqual(self.app.config['CDN_HTTPS'], None)
 
     def test_timestamp_default(self):
         """ Tests CDN_TIMESTAMP default value is correctly set. """
-        self.assertEquals(self.app.config['CDN_TIMESTAMP'], True)
+        self.assertEqual(self.app.config['CDN_TIMESTAMP'], True)
 
 
 class UrlTests(unittest.TestCase):
@@ -59,12 +58,12 @@ class UrlTests(unittest.TestCase):
     def test_url_for(self):
         """ Tests static endpoint correctly affects generated URLs. """
         # non static endpoint url_for in template
-        self.assertEquals(self.client_get('').get_data(True), '/')
+        self.assertEqual(self.client_get('').get_data(True), '/')
 
         # static endpoint url_for in template
         ufs = "{{ url_for('static', filename='bah.js') }}"
-        exp = '//mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs).get_data(True), exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js'
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
 
     def test_url_for_debug(self):
         """ Tests app.debug correctly affects generated URLs. """
@@ -72,29 +71,29 @@ class UrlTests(unittest.TestCase):
         ufs = "{{ url_for('static', filename='bah.js') }}"
 
         exp = '/static/bah.js'
-        self.assertEquals(self.client_get(ufs).get_data(True), exp)
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
 
     def test_url_for_https(self):
         """ Tests CDN_HTTPS correctly affects generated URLs. """
         ufs = "{{ url_for('static', filename='bah.js') }}"
 
         https_exp = 'https://mycdnname.cloudfront.net/static/bah.js'
-        http_exp = '//mycdnname.cloudfront.net/static/bah.js'
+        http_exp = 'http://mycdnname.cloudfront.net/static/bah.js'
 
         self.app.config['CDN_HTTPS'] = True
-        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
-                          https_exp)
-        self.assertEquals(self.client_get(ufs).get_data(True), https_exp)
+        self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
+                         https_exp)
+        self.assertEqual(self.client_get(ufs).get_data(True), https_exp)
 
         self.app.config['CDN_HTTPS'] = False
-        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
-                          http_exp)
-        self.assertEquals(self.client_get(ufs).get_data(True), http_exp)
+        self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
+                         https_exp)
+        self.assertEqual(self.client_get(ufs).get_data(True), http_exp)
 
         self.app.config['CDN_HTTPS'] = None
-        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
-                          http_exp)
-        self.assertEquals(self.client_get(ufs).get_data(True), http_exp)
+        self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
+                         https_exp)
+        self.assertEqual(self.client_get(ufs).get_data(True), http_exp)
 
     def test_url_for_timestamp(self):
         """ Tests CDN_TIMESTAMP correctly affects generated URLs. """
@@ -103,12 +102,12 @@ class UrlTests(unittest.TestCase):
         self.app.config['CDN_TIMESTAMP'] = True
         path = os.path.join(self.app.static_folder, 'bah.js')
         ts = int(os.path.getmtime(path))
-        exp = '//mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
-        self.assertEquals(self.client_get(ufs).get_data(True), exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
 
         self.app.config['CDN_TIMESTAMP'] = False
-        exp = '//mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs).get_data(True), exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js'
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
 
     def test_url_for_version(self):
         """ Tests that CDN_VERSION correctly affects the generated URLs. """
@@ -117,32 +116,32 @@ class UrlTests(unittest.TestCase):
         VERSION = '1.1-2'
         self.app.config['CDN_VERSION'] = VERSION
         path = os.path.join(self.app.static_folder, 'bah.js')
-        exp = '//mycdnname.cloudfront.net/static/bah.js?v={0}'.format(VERSION)
-        self.assertEquals(self.client_get(ufs).get_data(True), exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js?v={0}'.format(VERSION)
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
 
         self.app.config['CDN_VERSION'] = None
-        exp = '//mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs).get_data(True), exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js'
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
 
     def test_for_scheme(self):
         """ Tests _scheme correctly overrides CDN_HTTPS option. """
         ufs = "{{ url_for('static', filename='bah.js', _scheme='https') }}"
         self.app.config['CDN_HTTPS'] = False
         exp = 'https://mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs, secure=False).get_data(True),
-                          exp)
+        self.assertEqual(self.client_get(ufs, secure=False).get_data(True),
+                         exp)
 
         ufs = "{{ url_for('static', filename='bah.js', _scheme='http') }}"
         self.app.config['CDN_HTTPS'] = True
         exp = 'https://mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
-                          exp)
+        self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
+                         exp)
 
         ufs = "{{ url_for('static', filename='bah.js', _scheme=None) }}"
         self.app.config['CDN_HTTPS'] = True
         exp = 'https://mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
-                          exp)
+        self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
+                         exp)
 
 
 class BlueprintTest(unittest.TestCase):
@@ -154,17 +153,20 @@ class BlueprintTest(unittest.TestCase):
         CDN(self.app)
 
         test_bp = Blueprint('test_bp', 'test')
+
         @test_bp.route('/without_static/<url_for_string>')
         def a(url_for_string):
             return render_template_string(url_for_string)
+
         self.app.register_blueprint(test_bp)
 
         test2_bp = Blueprint('test2_bp', 'test2', static_folder=self.app.static_folder + '_bp')
+
         @test2_bp.route('/with_static/<url_for_string>')
         def b(url_for_string):
             return render_template_string(url_for_string)
-        self.app.register_blueprint(test2_bp)
 
+        self.app.register_blueprint(test2_bp)
 
     def test_blueprint_without_static_folder(self):
         ufs = "{{ url_for('static', filename='bah.js') }}"
@@ -172,9 +174,8 @@ class BlueprintTest(unittest.TestCase):
         response = client.get('/without_static/%s' % ufs)
         path = os.path.join(self.app.static_folder, 'bah.js')
         ts = int(os.path.getmtime(path))
-        exp = '//mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
-        self.assertEquals(response.get_data(True), exp)
-
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
+        self.assertEqual(response.get_data(True), exp)
 
     def test_blueprint_with_static_folder(self):
         ufs = "{{ url_for('static', filename='bah_bp.js') }}"
@@ -182,8 +183,8 @@ class BlueprintTest(unittest.TestCase):
         response = client.get('/with_static/%s' % ufs)
         path = os.path.join(self.app.blueprints['test2_bp'].static_folder, 'bah_bp.js')
         ts = int(os.path.getmtime(path))
-        exp = '//mycdnname.cloudfront.net/static/bah_bp.js?t={0}'.format(ts)
-        self.assertEquals(response.get_data(True), exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah_bp.js?t={0}'.format(ts)
+        self.assertEqual(response.get_data(True), exp)
 
 
 if __name__ == '__main__':

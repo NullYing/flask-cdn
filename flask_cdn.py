@@ -76,7 +76,7 @@ def url_for(endpoint, **values):
 
     # ADD FOR CDN
     if app.config['CDN_HTTPS']:
-        scheme = url_adapter.url_scheme = "https"
+        url_adapter.url_scheme = "https"
     if app.config['CDN_TIMESTAMP']:
         path = None
         if (request.blueprint is not None and
@@ -88,8 +88,9 @@ def url_for(endpoint, **values):
         values['t'] = int(os.path.getmtime(path))
 
     values['v'] = app.config['CDN_VERSION']
-
-    url_adapter = url_adapter.map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
+    if external:
+        url_adapter = url_adapter.map.bind(app.config['CDN_DOMAIN'],
+                                           url_scheme=url_adapter.url_scheme)
     # ADD END
 
     try:
