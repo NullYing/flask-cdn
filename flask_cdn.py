@@ -54,7 +54,8 @@ def url_for(endpoint, donot_use_cdn=False, **values):
         external = values.pop('_external', True)
 
     # ADD FOR CDN
-    external = True
+    if endpoint in app.config['CDN_ENDPOINTS']:
+        external = True
     # ADD END
 
     anchor = values.pop('_anchor', None)
@@ -74,14 +75,18 @@ def url_for(endpoint, donot_use_cdn=False, **values):
 
     # ADD FOR CDN
     if app.config['CDN_HTTPS']:
-        url_adapter.url_scheme = "https"
+        scheme = url_adapter.url_scheme = "https"
     if app.config['CDN_TIMESTAMP']:
-        path = os.path.join(endpoint, values['filename'])
+        static_files = app.static_folder
+        if (request.blueprint is not None and
+                app.blueprints[request.blueprint].has_static_folder):
+            static_files = app.blueprints[request.blueprint].static_folder
+        path = os.path.join(static_files, values['filename'])
         values['t'] = int(os.path.getmtime(path))
 
     values['v'] = app.config['CDN_VERSION']
 
-    url_adapter = app.url_map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
+    url_adapter = url_adapter.map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
     # ADD END
 
     try:
@@ -133,7 +138,8 @@ class CDN(object):
                     ('CDN_DOMAIN', None),
                     ('CDN_HTTPS', None),
                     ('CDN_TIMESTAMP', True),
-                    ('CDN_VERSION', None)]
+                    ('CDN_VERSION', None),
+                    ('CDN_ENDPOINTS', ['static'])]
 
         for k, v in defaults:
             app.config.setdefault(k, v)
