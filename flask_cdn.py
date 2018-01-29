@@ -8,7 +8,7 @@ from flask import url_for as flask_url_for
 from flask import current_app, _request_ctx_stack, request, _app_ctx_stack
 
 
-def url_for(endpoint, donot_use_cdn=False, **values):
+def url_for(endpoint, **values):
 
     appctx = _app_ctx_stack.top
     reqctx = _request_ctx_stack.top
@@ -18,7 +18,8 @@ def url_for(endpoint, donot_use_cdn=False, **values):
                            'executed when application context is available.')
     # ADD FOR CDN
     app = appctx.app
-    if app.config['CDN_DEBUG'] or donot_use_cdn:
+    force_no_cdn = values.pop('_force_no_cdn', None)
+    if app.config['CDN_DEBUG'] or force_no_cdn:
         return flask_url_for(endpoint, **values)
     # ADD END
 
