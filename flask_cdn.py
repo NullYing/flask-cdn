@@ -77,11 +77,13 @@ def url_for(endpoint, donot_use_cdn=False, **values):
     if app.config['CDN_HTTPS']:
         scheme = url_adapter.url_scheme = "https"
     if app.config['CDN_TIMESTAMP']:
-        static_files = app.static_folder
+        path = None
         if (request.blueprint is not None and
                 app.blueprints[request.blueprint].has_static_folder):
             static_files = app.blueprints[request.blueprint].static_folder
-        path = os.path.join(static_files, values['filename'])
+            path = os.path.join(static_files, values['filename'])
+        if path is None or not os.path.exists(path):
+            path = os.path.join(app.static_folder, values['filename'])
         values['t'] = int(os.path.getmtime(path))
 
     values['v'] = app.config['CDN_VERSION']
