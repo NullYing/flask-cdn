@@ -143,6 +143,14 @@ class UrlTests(unittest.TestCase):
         self.assertEqual(self.client_get(ufs, secure=True).get_data(True),
                          exp)
 
+    def test_force_no_cdn(self):
+        """ Tests app.debug correctly affects generated URLs. """
+        self.app.config['CDN_DEBUG'] = True
+        ufs = "{{ url_for('static', filename='bah.js', _force_no_cdn=True) }}"
+
+        exp = '/static/bah.js'
+        self.assertEqual(self.client_get(ufs).get_data(True), exp)
+
 
 class BlueprintTest(unittest.TestCase):
     def setUp(self):

@@ -18,7 +18,7 @@ def url_for(endpoint, **values):
                            'executed when application context is available.')
     # ADD FOR CDN
     app = appctx.app
-    force_no_cdn = values.pop('_force_no_cdn', None)
+    force_no_cdn = values.pop('_force_no_cdn', False)
     if app.config['CDN_DEBUG'] or force_no_cdn:
         return flask_url_for(endpoint, **values)
     # ADD END
