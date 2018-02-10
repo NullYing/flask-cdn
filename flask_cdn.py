@@ -5,7 +5,7 @@ except ImportError:
     from urlparse import quote as url_quote
 from werkzeug.routing import BuildError
 from flask import url_for as flask_url_for
-from flask import current_app, _request_ctx_stack, request, _app_ctx_stack
+from flask import _request_ctx_stack, request, _app_ctx_stack
 
 
 def url_for(endpoint, **values):
