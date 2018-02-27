@@ -89,6 +89,7 @@ def url_for(endpoint, **values):
 
     values['v'] = app.config['CDN_VERSION']
     if external:
+        url_adapter.map.default_subdomain = ""
         url_adapter = url_adapter.map.bind(app.config['CDN_DOMAIN'],
                                            url_scheme=url_adapter.url_scheme)
     # ADD END
