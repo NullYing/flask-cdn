@@ -100,6 +100,7 @@ def url_for(endpoint, **values):
             rv = url_adapter.build(endpoint, values, method=method,
                                    force_external=external)
         finally:
+            url_adapter.map.subdomain = ''
             if old_scheme is not None:
                 url_adapter.url_scheme = old_scheme
     except BuildError as error:
