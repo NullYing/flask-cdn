@@ -7,6 +7,9 @@
 
 Flask-CDN allows you to easily serve all your [Flask](http://flask.pocoo.org/) application’s static assets from a CDN (like [Amazon Cloudfront](https://aws.amazon.com/cloudfront/)), without having to modify your templates.
 
+修改了[flask-cdn](https://github.com/libwilliam/flask-cdn)的核心, 删除了CDN_ENDPOINTS, 并且修复了原有版本的缺陷, 并对新版flask做了兼容
+
+Ps: 原作者好像消失了, pull request都没人理
 
 ## How it works
 Flask-CDN replaces the URLs that Flask’s [`flask.url_for`](http://flask.pocoo.org/docs/latest/api/#flask.url_for) function would insert into your templates, with URLs that point to your CDN. This makes setting up an origin pull CDN extremely easy.
@@ -22,7 +25,7 @@ $ pip install flask-cdn
 
 or, if you want the latest github version:
 ```shell
-$ pip install git+git://github.com/libwilliam/flask-cdn.git
+$ pip install git+git://github.com/NullYing/flask-cdn
 ```
 
 You can also install Flask-CDN via Easy Install:
@@ -80,7 +83,6 @@ Within your Flask application’s settings you can provide the following setting
 | `CDN_HTTPS` | Specifies whether or not to serve your assets over HTTPS. If not specified the asset will be served by the same method the request comes in as. | `None` |
 | `CDN_TIMESTAMP` | Specifies whether or not to add a timestamp to the generated urls. | `True` |
 | `CDN_VERSION` | The version string to add to the generated urls. Useful when the timestamps of your files are different across servers or if you just want a more stable cache key. | `None` |
-| `CDN_ENDPOINTS` | The list of endpoints that will be rewritten to use the CDN. Endpoints will be checked for an exact match and also if it ends with a period followed by the endpoint name. | `['static']` |
 
 
 ## Serve Static Assets with CloudFront
