@@ -4,7 +4,7 @@ import setuptools
 setuptools.setup(
     name='Flask-CDN',
     version='1.5.4',
-    url='https://libwilliam.github.io/flask-cdn/',
+    url='https://github.com/NullYing/flask-cdn/',
     license='MIT',
     author='William Fagan',
     author_email='libwilliam@gmail.com',
