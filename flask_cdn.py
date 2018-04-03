@@ -55,8 +55,8 @@ def url_for(endpoint, **values):
         external = values.pop('_external', True)
 
     # ADD FOR CDN
-    if endpoint in app.config['CDN_ENDPOINTS']:
-        external = True
+    # if endpoint in app.config['CDN_ENDPOINTS']:
+    external = True
     # ADD END
 
     anchor = values.pop('_anchor', None)

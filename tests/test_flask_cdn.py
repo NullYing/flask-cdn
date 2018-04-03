@@ -58,7 +58,7 @@ class UrlTests(unittest.TestCase):
     def test_url_for(self):
         """ Tests static endpoint correctly affects generated URLs. """
         # non static endpoint url_for in template
-        self.assertEqual(self.client_get('').get_data(True), '/')
+        self.assertEqual(self.client_get('').get_data(True), 'http://mycdnname.cloudfront.net/')
 
         # static endpoint url_for in template
         ufs = "{{ url_for('static', filename='bah.js') }}"
@@ -168,7 +168,8 @@ class BlueprintTest(unittest.TestCase):
 
         self.app.register_blueprint(test_bp)
 
-        test2_bp = Blueprint('test2_bp', 'test2', static_folder=self.app.static_folder + '_bp')
+        test2_bp = Blueprint('test2_bp', 'test2', static_folder=self.app.static_folder + '_bp',
+                             static_url_path='/test2_bp/static')
 
         @test2_bp.route('/with_static/<url_for_string>')
         def b(url_for_string):
@@ -186,12 +187,12 @@ class BlueprintTest(unittest.TestCase):
         self.assertEqual(response.get_data(True), exp)
 
     def test_blueprint_with_static_folder(self):
-        ufs = "{{ url_for('static', filename='bah_bp.js') }}"
+        ufs = "{{ url_for('test2_bp.static', filename='bah_bp.js') }}"
         client = self.app.test_client()
         response = client.get('/with_static/%s' % ufs)
         path = os.path.join(self.app.blueprints['test2_bp'].static_folder, 'bah_bp.js')
         ts = int(os.path.getmtime(path))
-        exp = 'http://mycdnname.cloudfront.net/static/bah_bp.js?t={0}'.format(ts)
+        exp = 'http://mycdnname.cloudfront.net/test2_bp/static/bah_bp.js?t={0}'.format(ts)
         self.assertEqual(response.get_data(True), exp)
 
 
