@@ -11,12 +11,14 @@ def url_for(endpoint, **values):
                            'application context being pushed. This has to be '
                            'executed when application context is available.')
     app = appctx.app
+
+    file_name = values.get('filename')
     force_no_cdn = values.pop('_force_no_cdn', False)
-    if app.config['CDN_DEBUG'] or force_no_cdn:
+
+    if app.config['CDN_DEBUG'] or force_no_cdn or not file_name:
         return flask_url_for(endpoint, **values)
 
     values['_external'] = True
-    file_name = values.get('filename')
 
     url = flask_url_for(endpoint, **values)
 
