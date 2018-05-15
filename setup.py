@@ -6,7 +6,7 @@ setuptools.setup(
     version='1.5.4',
     url='https://github.com/NullYing/flask-cdn/',
     license='MIT',
-    author='NullYIng',
+    author='NullYing',
     author_email='ourweijiang@gmail.com',
     description='Serve the static files in your Flask app from a CDN.',
     long_description='Full documentation can be found on the Flask-CDN "Home Page".',
