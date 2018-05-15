@@ -2,7 +2,7 @@ import setuptools
 
 
 setuptools.setup(
-    name='Flask-CDN',
+    name='Flask-CDN-Auto',
     version='1.5.4',
     url='https://github.com/NullYing/flask-cdn/',
     license='MIT',
