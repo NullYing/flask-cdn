@@ -1,9 +1,9 @@
 # Flask-CDN
 
-[![Version](https://img.shields.io/pypi/v/flask-cdn.svg)](https://pypi.python.org/pypi/Flask-CDN)
-[![Build Status](https://travis-ci.org/libwilliam/flask-cdn.png)](https://travis-ci.org/libwilliam/flask-cdn)
-[![Coverage](https://coveralls.io/repos/libwilliam/flask-cdn/badge.svg)](https://coveralls.io/github/libwilliam/flask-cdn)
-[![License](https://img.shields.io/pypi/l/flask-cdn.svg)](https://github.com/libwilliam/flask-cdn/blob/master/LICENSE.txt)
+[![Version](https://img.shields.io/pypi/v/flask-cdn.svg)](https://pypi.org/project/Flask-CDN-Auto)
+[![Build Status](https://travis-ci.org/libwilliam/flask-cdn.png)](https://travis-ci.org/NullYing/flask-cdn)
+[![Coverage](https://coveralls.io/repos/libwilliam/flask-cdn/badge.svg)](https://coveralls.io/github/NullYing/flask-cdn)
+[![License](https://img.shields.io/pypi/l/flask-cdn.svg)](https://github.com/NullYing/flask-cdn/blob/master/LICENSE.txt)
 
 Flask-CDN allows you to easily serve all your [Flask](http://flask.pocoo.org/) application’s static assets from a CDN (like [Amazon Cloudfront](https://aws.amazon.com/cloudfront/)), without having to modify your templates.
 
