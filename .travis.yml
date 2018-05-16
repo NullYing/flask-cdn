@@ -17,3 +17,7 @@ script:
 after_success:
   - pip install coveralls
   - coveralls
+
+env:
+    global:
+        secure: "e11C+k1WNdkRS9NRJRK0+xlC0+Hxc19/wFcIJc6phP/O4EDqvlUKH1o7I2rLNfj6IKLZdpkfTtqHOHprdYG3sdxKSYzKcr7TyMowhwjeDh7ghuMHxkwdEJOFQm3QU7dUOeK2C+lBvGqcLYEJzdKyaY7E3eXqPveLLm+3SzltNn/mvfooSNYe/cXzqnKKh7huS1I+kHf8++7uzXWd9VlQX9otIzDV1FyZVisgJBeACFujKWpboFlLDbJmSpq0tHeKp66wpuKE83NKv0al1Shma+uko0ascazqV0Z55aTcqvaG44LkTfXOuHWuWdjkcMYxvOEveRuMo0tLVPL3O7DI7//xyJGj/Xr/pUQY/bjh+stKaMTUNRZGTgqtVwDZjgs+qLVisxbZ1/psJfL30btiExVGfVekqKVVbcRzy4akIEfnji2bnubgTNikRrbti03ebP5vVqzLImDbT+Wgs8W8JCJK+wmwudkXiH1XPpBIMf5mRRQ2E0BGC9sFeqWV0n16puqqWmHvgx+si/458S5QcsFJfxMx2/GqNMtnZJz4PFxK2xY3mMh2U2uppxBgJ4e2zYj7GSl7+JMmDeQ1pttTfUkeQ1kVOKd6eUcmzylN007nWqsB7yMdvWmt3hWNCfpAyz9BBYx8UBYFxwU5q7+zIJgF2fYWksZgzsXQuMAsjU0="
