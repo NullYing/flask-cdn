@@ -1,7 +1,10 @@
 import os
-from urllib import parse
 from flask import url_for as flask_url_for, request
 from flask import _app_ctx_stack
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 
 def url_for(endpoint, **values):
