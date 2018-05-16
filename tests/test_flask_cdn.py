@@ -58,7 +58,7 @@ class UrlTests(unittest.TestCase):
     def test_url_for(self):
         """ Tests static endpoint correctly affects generated URLs. """
         # non static endpoint url_for in template
-        self.assertEqual(self.client_get('').get_data(True), 'http://mycdnname.cloudfront.net/')
+        self.assertEqual(self.client_get('').get_data(True), '/')
 
         # static endpoint url_for in template
         ufs = "{{ url_for('static', filename='bah.js') }}"
