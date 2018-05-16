@@ -4,8 +4,9 @@ from flask import _app_ctx_stack
 try:
     from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 except ImportError:
-    from urlparse import urlparse
-    from urllib import urlencode, urlunparse, parse_qsl
+    from urlparse import urlparse, urlunparse, parse_qsl
+    from urllib import urlencode
+
 
 def url_for(endpoint, **values):
     appctx = _app_ctx_stack.top
