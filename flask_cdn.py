@@ -2,9 +2,9 @@ import os
 from flask import url_for as flask_url_for, request
 from flask import _app_ctx_stack
 try:
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, urlencode, urlunparse, parse_qsl
 except ImportError:
-    from urlparse import urlparse
+    from urlparse import urlparse, urlencode, urlunparse, parse_qsl
 
 
 def url_for(endpoint, **values):
@@ -25,7 +25,7 @@ def url_for(endpoint, **values):
 
     url = flask_url_for(endpoint, **values)
 
-    pr = parse.urlparse(url)
+    pr = urlparse(url)
     query = dict(parse.parse_qsl(pr.query))
 
     if app.config['CDN_VERSION']:
@@ -44,8 +44,8 @@ def url_for(endpoint, **values):
     if app.config['CDN_HTTPS'] is True:
         pr_list[0] = 'https'
     pr_list[1] = app.config['CDN_DOMAIN']
-    pr_list[4] = parse.urlencode(query)
-    return parse.urlunparse(pr_list)
+    pr_list[4] = urlencode(query)
+    return urlunparse(pr_list)
 
 
 class CDN(object):
