@@ -27,7 +27,7 @@ def url_for(endpoint, **values):
     url = flask_url_for(endpoint, **values)
 
     pr = urlparse(url)
-    query = dict(parse.parse_qsl(pr.query))
+    query = dict(parse_qsl(pr.query))
 
     if app.config['CDN_VERSION']:
         query.update({'v': app.config['CDN_VERSION']})
