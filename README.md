@@ -1,7 +1,7 @@
 # Flask-CDN-Auto
 
 [![Version](https://img.shields.io/pypi/v/flask-cdn-auto.svg)](https://pypi.org/project/Flask-CDN-Auto)
-[![Build Status](https://travis-ci.org/NullYing/flask-cdn.svg?branch=master)](https://travis-ci.org/NullYing/flask-cdn)
+[![Build Status](https://travis-ci.org/NullYing/flask-cdn-auto.svg?branch=master)](https://travis-ci.org/NullYing/flask-cdn-auto)
 [![Coverage Status](https://coveralls.io/repos/github/NullYing/flask-cdn/badge.svg?branch=master)](https://coveralls.io/github/NullYing/flask-cdn?branch=master)
 [![License](https://img.shields.io/pypi/l/flask-cdn-auto.svg)](https://github.com/NullYing/flask-cdn/blob/master/LICENSE.txt)
 
