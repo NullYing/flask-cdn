@@ -1,4 +1,4 @@
-# Flask-CDN
+# Flask-CDN-Auto
 
 [![Version](https://img.shields.io/pypi/v/flask-cdn-auto.svg)](https://pypi.org/project/Flask-CDN-Auto)
 [![Build Status](https://travis-ci.org/NullYing/flask-cdn.svg?branch=master)](https://travis-ci.org/NullYing/flask-cdn)
