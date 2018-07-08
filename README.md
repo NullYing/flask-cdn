@@ -9,28 +9,19 @@ Flask-CDN allows you to easily serve all your [Flask](http://flask.pocoo.org/) a
 
 修改了[flask-cdn](https://github.com/libwilliam/flask-cdn)的核心, 删除了CDN_ENDPOINTS, 并且修复了原有版本的缺陷, 并对新版flask做了兼容
 
-Ps: 原作者好像消失了, pull request都没人理
-
 ## How it works
-Flask-CDN replaces the URLs that Flask’s [`flask.url_for`](http://flask.pocoo.org/docs/latest/api/#flask.url_for) function would insert into your templates, with URLs that point to your CDN. This makes setting up an origin pull CDN extremely easy.
 
-Internally, every time `url_for` is called in one of your application’s templates, `flask_cdn.url_for` is instead invoked. If the endpoint provided is deemed to refer to static assets, then the CDN URL for the asset specified in the filename argument is instead returned. Otherwise, `flask_cdn.url_for` passes the call on to [`flask.url_for`](http://flask.pocoo.org/docs/latest/api/#flask.url_for).
-
+通过重载flask.url_for的方法，使用urllib库对生成的url进行替换，并加载时间戳等参数
 
 ## Installation
 If you use pip then installation is simply:
 ```shell
-$ pip install flask-cdn
+$ pip install Flask-CDN-Auto
 ```
 
 or, if you want the latest github version:
 ```shell
 $ pip install git+git://github.com/NullYing/flask-cdn
-```
-
-You can also install Flask-CDN via Easy Install:
-```shell
-$ easy_install flask-cdn
 ```
 
 ## Dependencies
